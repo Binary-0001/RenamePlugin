@@ -1,0 +1,30 @@
+plugins {
+    id 'groovy'
+    id 'maven'
+}
+
+dependencies {
+
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'com.android.tools.build:gradle-api:3.4.1'
+    implementation 'com.android.tools.build:gradle:3.4.1'
+    implementation 'org.dom4j:dom4j:2.0.2'
+}
+
+//group和version在后面使用自定义插件的时候会用到
+group='com.xyz.sdk.plugin'
+version='1.0.0'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //提交到远程服务器：
+            // repository(url: "http://www.xxx.com/repos") {
+            //    authentication(userName: "admin", password: "admin")
+            // }
+            //本地的Maven地址设置为D:/repos
+            repository(url: uri('E:/repos'))
+        }
+    }
+}
