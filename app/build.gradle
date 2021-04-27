@@ -1,11 +1,5 @@
 plugins {
     id 'com.android.application'
-    id 'com.xyz.sdk.plugin'
-}
-
-addSceneActivitySuffix {
-    suffix "HiaHia"
-    advSdkAarName "adv_sdk2-normal-debug"
 }
 
 
