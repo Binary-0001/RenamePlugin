@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.SimpleRemapper
@@ -99,7 +100,7 @@ class RenamePlugin extends Transform implements Plugin<Project> {
         if (jarInput.file.getAbsolutePath().endsWith(".jar")) {
             //重名名输出文件,因为可能同名,会覆盖
             def jarName = jarInput.name
-
+            println("name :" + jarInput.getFile().path)
             def md5Name = DigestUtils.md5Hex(jarInput.file.getAbsolutePath())
             if (jarName.endsWith(".jar")) {
                 jarName = jarName.substring(0, jarName.length() - 4)
@@ -120,15 +121,19 @@ class RenamePlugin extends Transform implements Plugin<Project> {
                 InputStream inputStream = jarFile.getInputStream(jarEntry)
                 //插桩class
                 if (jarInput.getFile().getPath().contains(mSuffix.getAdvSdkAarName()) && checkClassFile(entryName)) {
+                    String simpleName = entryName.substring(0, entryName.length() - 6)
+                    if (ExtensionProcess.getToReplace().containsKey(simpleName)) {
+                        zipEntry.name = ExtensionProcess.getToReplace().get(simpleName) + ".class";
+                    }
                     //class文件处理
                     jarOutputStream.putNextEntry(zipEntry)
                     ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
                     ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
 
                     SimpleRemapper remapper = new SimpleRemapper(ExtensionProcess.getToReplace());
-                    ClassRemapper cr = new ClassRemapper(classWriter, remapper);
-
+                    ClassRemapper cr = new ClassRemapper(classWriter, remapper)
                     classReader.accept(cr, EXPAND_FRAMES)
+
                     byte[] code = classWriter.toByteArray()
                     jarOutputStream.write(code)
                 } else {

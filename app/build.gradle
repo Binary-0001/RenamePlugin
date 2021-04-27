@@ -65,6 +65,7 @@ dependencies {
     api 'pl.droidsonroids.gif:android-gif-drawable:1.2.6'
     api 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'//ijk
     api 'com.airbnb.android:lottie:2.7.0'
+
 }
 
 

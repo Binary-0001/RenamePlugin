@@ -48,6 +48,7 @@ public class ExtensionProcess extends AbsProcess {
             String pkgName = matcher.group();
             toReplace.put(pkgName, pkgName + suffix);
             classReplace.put(pkgName.replace('.', '/'), pkgName.replace('.', '/') + suffix);
+            System.out.println(pkgName.replace('.', '/')+" >>>>>>> "+pkgName.replace('.', '/') + suffix);
         }
 
         boolean replaced = false;
