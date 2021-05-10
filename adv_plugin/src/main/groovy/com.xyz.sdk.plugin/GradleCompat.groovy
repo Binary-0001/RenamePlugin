@@ -16,7 +16,16 @@ class GradleCompat {
                 try {
                     return task.getManifestOutputFile()
                 } catch (Exception e3) {
-                    return new File(task.getManifestOutputDirectory(), ANDROID_MANIFEST)
+                    try {
+                        return new File(task.getManifestOutputDirectory(), ANDROID_MANIFEST)
+                    } catch (Exception e4) {
+                        Set<File> files = task.getOutputs().getPreviousOutputFiles();
+                        for (int i = 0; i < files.size(); i++) {
+                            if (files.getAt(i).getPath().contains(ANDROID_MANIFEST)) {
+                                return new File(files.getAt(i).getPath())
+                            }
+                        }
+                    }
                 }
             }
         }
