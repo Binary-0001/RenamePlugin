@@ -100,7 +100,6 @@ class RenamePlugin extends Transform implements Plugin<Project> {
         if (jarInput.file.getAbsolutePath().endsWith(".jar")) {
             //重名名输出文件,因为可能同名,会覆盖
             def jarName = jarInput.name
-            println("name :" + jarInput.getFile().path)
             def md5Name = DigestUtils.md5Hex(jarInput.file.getAbsolutePath())
             if (jarName.endsWith(".jar")) {
                 jarName = jarName.substring(0, jarName.length() - 4)
