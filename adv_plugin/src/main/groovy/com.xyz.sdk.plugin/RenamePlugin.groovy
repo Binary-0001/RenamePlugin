@@ -23,6 +23,7 @@ import static org.objectweb.asm.ClassReader.EXPAND_FRAMES
 
 class RenamePlugin extends Transform implements Plugin<Project> {
     static Suffix mSuffix;
+    static boolean foundXYZSdk = false;
 
     void apply(Project project) {
         mSuffix = project.getExtensions().create("addSceneActivitySuffix", Suffix);
@@ -77,6 +78,9 @@ class RenamePlugin extends Transform implements Plugin<Project> {
                 handleJarInputs(jarInput, outputProvider)
             }
         }
+        println " found XYZ Sdk : "+foundXYZSdk
+        checkFoundXyz()
+        foundXYZSdk = false
         def cost = (System.currentTimeMillis() - startTime) / 1000
         println '--------------- RenamePlugin visit end --------------- '
         println "RenamePlugin cost ： $cost s"
@@ -118,8 +122,11 @@ class RenamePlugin extends Transform implements Plugin<Project> {
                 String entryName = jarEntry.getName()
                 ZipEntry zipEntry = new ZipEntry(entryName)
                 InputStream inputStream = jarFile.getInputStream(jarEntry)
+                String path = jarInput.getFile().getPath();
                 //插桩class
-                if (jarInput.getFile().getPath().contains(mSuffix.getAdvSdkAarName()) && checkClassFile(entryName)) {
+                if ((path.contains(mSuffix.getAdvSdkAarName()) || path.contains("xmsdk"))
+                        && checkClassFile(entryName)) {
+                    foundXYZSdk = true;
                     String simpleName = entryName.substring(0, entryName.length() - 6)
                     if (ExtensionProcess.getToReplace().containsKey(simpleName)) {
                         zipEntry.name = ExtensionProcess.getToReplace().get(simpleName) + ".class";
@@ -149,6 +156,12 @@ class RenamePlugin extends Transform implements Plugin<Project> {
             org.apache.commons.io.FileUtils.copyFile(tmpFile, dest)
             tmpFile.delete()
 
+        }
+    }
+
+    static boolean checkFoundXyz(){
+        if(!foundXYZSdk) {
+            throw new RuntimeException("Can't found xyz sdk, please check advSdkAarName is equals sdkName")
         }
     }
 
