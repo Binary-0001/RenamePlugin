@@ -46,10 +46,9 @@ public class ExtensionProcess extends AbsProcess {
         Matcher matcher = pattern.matcher(xml);
         while (matcher.find()) {
             String pkgName = matcher.group();
-            toReplace.put(pkgName, pkgName.replace("discovery", suffix));
+            toReplace.put(pkgName, replacePkg(pkgName, suffix));
             String pathName = pkgName.replace('.', '/');
-            classReplace.put(pathName, pathName.replace("discovery", suffix));
-            System.out.println(pkgName.replace('.', '/') + " >>>>>>> " + pkgName.replace("discovery", suffix));
+            classReplace.put(pathName, replacePkg(pathName, suffix));
         }
 
         boolean replaced = false;
@@ -67,5 +66,9 @@ public class ExtensionProcess extends AbsProcess {
             }
             mContainer.document = document;
         }
+    }
+
+    public static String replacePkg(String pkgName, String suffix) {
+        return pkgName.replace("discovery", suffix);
     }
 }

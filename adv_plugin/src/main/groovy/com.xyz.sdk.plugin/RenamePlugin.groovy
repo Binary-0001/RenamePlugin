@@ -122,6 +122,10 @@ class RenamePlugin extends Transform implements Plugin<Project> {
                 //插桩class
                 if (checkClassFile(entryName)) {
                     String simpleName = entryName.substring(0, entryName.length() - 6)
+                    String[] splitName = simpleName.tokenize('$')
+                    if (splitName != null && splitName.size() == 2 && ExtensionProcess.getToReplace().containsKey(splitName[0])) {
+                        ExtensionProcess.getToReplace().put(simpleName, ExtensionProcess.replacePkg(simpleName, mSuffix.name))
+                    }
                     if (ExtensionProcess.getToReplace().containsKey(simpleName)) {
                         zipEntry.name = ExtensionProcess.getToReplace().get(simpleName) + ".class";
                     }
