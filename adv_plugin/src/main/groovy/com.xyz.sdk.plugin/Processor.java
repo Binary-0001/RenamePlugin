@@ -25,13 +25,11 @@ public class Processor {
     private File mOutXml;
 
     private boolean mDebuggable;
-    private String suffix;
 
-    public Processor(String suffix, ManifestProcessorTask task, boolean debuggable) throws Throwable {
+    public Processor(ManifestProcessorTask task, boolean debuggable) throws Throwable {
         mDebuggable = debuggable;
         mManifest = GradleCompat.getManifestOutputFile(task);
         mOutXml = new File(mManifest.getParentFile(), "EditAndroidManifest.xml");
-        this.suffix = suffix;
     }
 
     public void run() throws Throwable {
@@ -45,7 +43,7 @@ public class Processor {
 
         DocumentContainer container = new DocumentContainer(reader, document);
 
-        new ExtensionProcess(suffix,container).process();
+        new ExtensionProcess(container).process();
 
         // 输出到文件
         FileWriter out = new FileWriter(mOutXml);

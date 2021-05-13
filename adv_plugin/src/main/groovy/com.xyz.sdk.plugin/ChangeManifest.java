@@ -14,7 +14,7 @@ import org.gradle.api.tasks.TaskInputs;
  */
 public class ChangeManifest {
 
-    public static void apply(Project project, Suffix suffix) {
+    public static void apply(Project project) {
         if (!project.getPlugins().hasPlugin("com.android.application")) {
             Throwable e = new RuntimeException();
             throw new ProjectConfigurationException("Plugin requires the 'com.android.application' plugin to be configured.", e);
@@ -33,7 +33,7 @@ public class ChangeManifest {
                 manifestTask.doLast(task -> {
                     Processor processor;
                     try {
-                        processor = new Processor(suffix.getName(), manifestTask, debuggable);
+                        processor = new Processor(manifestTask, debuggable);
                         processor.run();
                     } catch (Throwable e) {
                         throw new RuntimeException("处理 Manifest 失败", e.getCause());

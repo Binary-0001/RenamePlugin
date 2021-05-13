@@ -1,9 +1,6 @@
 package com.xyz.sdk.plugin;
 
-import org.dom4j.Attribute;
 import org.dom4j.Document;
-import org.dom4j.Element;
-import org.gradle.api.logging.Logger;
 
 import java.io.StringReader;
 import java.util.HashMap;
@@ -21,14 +18,15 @@ public class ExtensionProcess extends AbsProcess {
     private Map<String, String> toReplace;
     private static Map<String, String> classReplace;
     private Processor.DocumentContainer mContainer;
-    private String suffix;
+    private String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static String[] packageParts;
 
-    ExtensionProcess(String suffix, Processor.DocumentContainer container) {
+    ExtensionProcess(Processor.DocumentContainer container) {
         super(null, null);
         mContainer = container;
         toReplace = new HashMap<>();
         classReplace = new HashMap<>();
-        this.suffix = suffix;
+        packageParts = new String[]{RandomStringUtils.random(7, chars), RandomStringUtils.random(7, chars), RandomStringUtils.random(7, chars)};
     }
 
     public static Map<String, String> getToReplace() {
@@ -44,11 +42,12 @@ public class ExtensionProcess extends AbsProcess {
         String pkg = "com.tencent.qqpim.discovery.[A-Za-z0-9.]+Activity";
         Pattern pattern = Pattern.compile(pkg);
         Matcher matcher = pattern.matcher(xml);
+
         while (matcher.find()) {
             String pkgName = matcher.group();
-            toReplace.put(pkgName, replacePkg(pkgName, suffix));
+            toReplace.put(pkgName, replacePkg(pkgName));
             String pathName = pkgName.replace('.', '/');
-            classReplace.put(pathName, replacePkg(pathName, suffix));
+            classReplace.put(pathName, replacePkg(pathName));
         }
 
         boolean replaced = false;
@@ -68,7 +67,9 @@ public class ExtensionProcess extends AbsProcess {
         }
     }
 
-    public static String replacePkg(String pkgName, String suffix) {
-        return pkgName.replace("discovery", suffix);
+    public static String replacePkg(String pkgName) {
+        return pkgName.replace("tencent", packageParts[0])
+                .replace("qqpim", packageParts[1])
+                .replace("discovery", packageParts[2]);
     }
 }

@@ -9,7 +9,6 @@ import org.apache.commons.io.IOUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.SimpleRemapper
@@ -22,13 +21,11 @@ import java.util.zip.ZipEntry
 import static org.objectweb.asm.ClassReader.EXPAND_FRAMES
 
 class RenamePlugin extends Transform implements Plugin<Project> {
-    static Suffix mSuffix;
 
     void apply(Project project) {
-        mSuffix = project.getExtensions().create("addSceneActivitySuffix", Suffix);
         def android = project.extensions.getByType(AppExtension)
         android.registerTransform(this)
-        ChangeManifest.apply(project, mSuffix)
+        ChangeManifest.apply(project)
     }
 
     @Override
@@ -124,7 +121,7 @@ class RenamePlugin extends Transform implements Plugin<Project> {
                     String simpleName = entryName.substring(0, entryName.length() - 6)
                     String[] splitName = simpleName.tokenize('$')
                     if (splitName != null && splitName.size() == 2 && ExtensionProcess.getToReplace().containsKey(splitName[0])) {
-                        ExtensionProcess.getToReplace().put(simpleName, ExtensionProcess.replacePkg(simpleName, mSuffix.name))
+                        ExtensionProcess.getToReplace().put(simpleName, ExtensionProcess.replacePkg(simpleName))
                     }
                     if (ExtensionProcess.getToReplace().containsKey(simpleName)) {
                         zipEntry.name = ExtensionProcess.getToReplace().get(simpleName) + ".class";
