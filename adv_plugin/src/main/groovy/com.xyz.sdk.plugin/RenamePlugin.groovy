@@ -51,7 +51,7 @@ class RenamePlugin extends Transform implements Plugin<Project> {
 
     @Override
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
-        println '--------------- RenamePlugin start --------------- '
+        println '--------------- RenamePlugin jar class start --------------- '
         def startTime = System.currentTimeMillis();
         Collection<TransformInput> inputs = transformInvocation.inputs
         TransformOutputProvider outputProvider = transformInvocation.outputProvider
@@ -75,7 +75,7 @@ class RenamePlugin extends Transform implements Plugin<Project> {
             }
         }
         def cost = (System.currentTimeMillis() - startTime) / 1000
-        println '--------------- RenamePlugin visit end --------------- '
+        println '--------------- RenamePlugin jar class end --------------- '
         println "RenamePlugin cost ： $cost s"
     }
 

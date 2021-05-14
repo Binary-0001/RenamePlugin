@@ -33,7 +33,7 @@ public class Processor {
     }
 
     public void run() throws Throwable {
-        System.out.println("EditManifest: start.");
+        System.out.println("--------------- RenamePlugin EditManifest: start ---------------");
         if (mOutXml.exists()) {
             mOutXml.delete();
         }
@@ -58,6 +58,7 @@ public class Processor {
             manifestTmp.renameTo(mManifest);
             mOutXml.delete();
         }
+        System.out.println("--------------- RenamePlugin EditManifest: end ---------------");
     }
 
     static class DocumentContainer {

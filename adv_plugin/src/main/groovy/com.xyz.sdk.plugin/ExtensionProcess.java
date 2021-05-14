@@ -57,6 +57,8 @@ public class ExtensionProcess extends AbsProcess {
             replaced = true;
         }
 
+        xml = xml.replace("\r\n", "\n");
+
         if (replaced) {
             try (StringReader reader = new StringReader(xml)) {
                 document = mContainer.reader.read(reader);
