@@ -17,8 +17,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MediationConfig config = new MediationConfig.Builder()
+                .setApplication(getApplication())
                 .build();
-        MediationManager.init(config);
+        //MediationManager.init(config);
     }
 
     public void doASM(View view) {

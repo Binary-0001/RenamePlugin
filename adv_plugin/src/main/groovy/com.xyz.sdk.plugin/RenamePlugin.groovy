@@ -120,18 +120,18 @@ class RenamePlugin extends Transform implements Plugin<Project> {
                 if (checkClassFile(entryName)) {
                     String simpleName = entryName.substring(0, entryName.length() - 6)
                     String[] splitName = simpleName.tokenize('$')
-                    if (splitName != null && splitName.size() == 2 && ExtensionProcess.getToReplace().containsKey(splitName[0])) {
-                        ExtensionProcess.getToReplace().put(simpleName, ExtensionProcess.replacePkg(simpleName))
+                    if (splitName != null && splitName.size() == 2 && ManifestHelper.getToReplace().containsKey(splitName[0])) {
+                        ManifestHelper.getToReplace().put(simpleName, ManifestHelper.replacePkg(simpleName))
                     }
-                    if (ExtensionProcess.getToReplace().containsKey(simpleName)) {
-                        zipEntry.name = ExtensionProcess.getToReplace().get(simpleName) + ".class";
+                    if (ManifestHelper.getToReplace().containsKey(simpleName)) {
+                        zipEntry.name = ManifestHelper.getToReplace().get(simpleName) + ".class";
                     }
                     //class文件处理
                     jarOutputStream.putNextEntry(zipEntry)
                     ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
                     ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
 
-                    SimpleRemapper remapper = new SimpleRemapper(ExtensionProcess.getToReplace());
+                    SimpleRemapper remapper = new SimpleRemapper(ManifestHelper.getToReplace());
                     ClassRemapper cr = new ClassRemapper(classWriter, remapper)
                     classReader.accept(cr, EXPAND_FRAMES)
 

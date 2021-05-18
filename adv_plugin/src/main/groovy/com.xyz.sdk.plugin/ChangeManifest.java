@@ -7,6 +7,17 @@ import org.gradle.api.Project;
 import org.gradle.api.ProjectConfigurationException;
 import org.gradle.api.tasks.TaskInputs;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+
+import groovy.util.Node;
+import groovy.util.NodeList;
+import groovy.util.XmlParser;
+import groovy.xml.Namespace;
+import groovy.xml.XmlUtil;
+
 /**
  * @author guoliang.zhang
  * @Date on 2021/4/23
@@ -31,15 +42,15 @@ public class ChangeManifest {
                 ManifestProcessorTask manifestTask = (ManifestProcessorTask) project1.getTasks().getByName("process" + name + "Manifest");
 
                 manifestTask.doLast(task -> {
-                    Processor processor;
                     try {
-                        processor = new Processor(manifestTask, debuggable);
-                        processor.run();
-                    } catch (Throwable e) {
+                        System.out.println("--------------- RenamePlugin EditManifest: start ---------------");
+                        ManifestHelper helper = new ManifestHelper(manifestTask);
+                        helper.replace();
+                        System.out.println("--------------- RenamePlugin EditManifest: end ---------------");
+                    } catch (Exception e) {
                         throw new RuntimeException("处理 Manifest 失败", e.getCause());
                     }
                 });
-//                }
             });
         });
     }
