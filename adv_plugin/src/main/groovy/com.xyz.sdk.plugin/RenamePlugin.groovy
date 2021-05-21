@@ -25,7 +25,7 @@ class RenamePlugin extends Transform implements Plugin<Project> {
     void apply(Project project) {
         def android = project.extensions.getByType(AppExtension)
         android.registerTransform(this)
-        ChangeManifest.apply(project)
+        TaskManager.apply(project)
     }
 
     @Override

@@ -1,31 +1,21 @@
 package com.xyz.sdk.plugin;
 
 import com.android.build.gradle.AppExtension;
+import com.android.build.gradle.internal.pipeline.TransformTask;
 import com.android.build.gradle.tasks.ManifestProcessorTask;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.ProjectConfigurationException;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.TaskInputs;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
-
-import groovy.util.Node;
-import groovy.util.NodeList;
-import groovy.util.XmlParser;
-import groovy.xml.Namespace;
-import groovy.xml.XmlUtil;
 
 /**
  * @author guoliang.zhang
  * @Date on 2021/4/23
  * @Description
  */
-public class ChangeManifest {
+public class TaskManager {
+    public static boolean isModifyManifest = false;
 
     public static void apply(Project project) {
         if (!project.getPlugins().hasPlugin("com.android.application")) {
@@ -45,6 +35,7 @@ public class ChangeManifest {
                 manifestTask.doLast(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
+                        isModifyManifest = true;
                         try {
                             System.out.println("--------------- RenamePlugin EditManifest: start ---------------");
                             ManifestHelper helper = new ManifestHelper(manifestTask);
@@ -54,6 +45,12 @@ public class ChangeManifest {
                             throw new RuntimeException("处理 Manifest 失败", e.getCause());
                         }
                     }
+                });
+                TransformTask transformTask = (TransformTask) project1.getTasks().getByName("transformClassesWithRenamePluginFor" + name);
+                transformTask.getOutputs().upToDateWhen(it -> {
+                    boolean upToDate = !isModifyManifest;
+                    isModifyManifest = false;
+                    return upToDate;
                 });
             });
         });
